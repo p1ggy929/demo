@@ -1,53 +1,64 @@
-from flask import Flask, render_template,request
+from flask import Flask, render_template, request
 from database import con_mysql
+
 app = Flask(__name__)
 
 login_data = {
-    "admin":"123456"
+    "admin": "123456"
 }
+
+
 @app.route('/')
-def index_login():  # put application's code here
+def index_login():
     return render_template('login.html')
+
 
 @app.route("/register")
 def index_register():
     return render_template('register.html')
 
 
-
-@app.route('/login',methods=["post"])
+@app.route('/login', methods=["POST"])
 def login():
     name = request.form.get('username')
     pwd = request.form.get('password')
 
-    code = "select * from login_user where username = '%s'" % (name)
-    cursor_ans = con_mysql(code)
-    cursor_select = cursor_ans.fetchall()
-    if len(cursor_select) > 0:
-        if pwd == cursor_select[0]['password']:
-            return "登录成功"
+    code = "SELECT * FROM login_user WHERE username = %s"
+    result = con_mysql(code, (name,))
+    if result['status'] == 'success':
+        cursor_select = result['data']
+        if len(cursor_select) > 0:
+            if pwd == cursor_select[0]['password']:
+                return "登录成功"
+            else:
+                return '密码错误 <a href="/">返回登录</a>'
         else:
-            return '密码错误 <a href="/">返回登录</a>'
+            return '用户不存在 <a href="/">返回登录</a>'
     else:
-        return '用户不存在 <a href="/">返回登录</a>'
+        return f"查询出错: {result['message']}"
 
 
-@app.route('/register',methods=["post"])
+@app.route('/register', methods=["POST"])
 def register():
     name = request.form.get('username')
     pwd = request.form.get('password')
 
-    code = "select * from login_user where username = '%s'" % (name)
-    cursor_ans = con_mysql(code)
-    cursor_select = cursor_ans.fetchall()
-    if len(cursor_select) > 0:
-       return '用户已存在 <a href="/">返回登录</a>'
+    code = "SELECT * FROM login_user WHERE username = %s"
+    result = con_mysql(code, (name,))
+    if result['status'] == 'success':
+        cursor_select = result['data']
+        if len(cursor_select) > 0:
+            return '用户已存在 <a href="/">返回登录</a>'
+        else:
+            code = "INSERT INTO `login_user` (`username`, `password`) VALUES (%s, %s)"
+            insert_result = con_mysql(code, (name, pwd))
+            if insert_result['status'] == 'success':
+                return '注册成功 <a href="/">返回登录</a>'
+            else:
+                return f"注册出错: {insert_result['message']}"
     else:
-        code = "INSERT INTO `login_user` (`username`, `password`) VALUES (%s, %s)" % (name, pwd)
-        con_mysql(code)
-        return '注册成功 <a href="/">返回登录</a>'
+        return f"查询出错: {result['message']}"
 
 
 if __name__ == '__main__':
     app.run()
-
