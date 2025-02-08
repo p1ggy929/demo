@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/login.css">
+    <title>注册页面</title>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 注册表单 -->
+        <div class="form-container sign-in-container">
+            <form action="/register" method="post">
+                <h1>注册</h1>
+                <input type="text" name="username" placeholder="用户名" />
+                <input type="password" name="password" placeholder="密码" />
+                <input class="button" type="submit" value="注册">
+            </form>
+        </div>
+        <!-- 切换面板 -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-right">
+                    <h1>宝，盼你好久啦！</h1>
+                    <p>速速登录，解锁超绝英语飞升秘籍。实用课程、专项特训、趣味互动全都严阵以待，就等你一路开挂，轻松拿捏英语！</p>
+                    <a href="/" class="button ghost">返回登录</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
