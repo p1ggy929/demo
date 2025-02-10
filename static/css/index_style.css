@@ -36,7 +36,7 @@ a {
     left: 0;
     top: 0;
     width: 100%;
-    background-color: #ffffff;
+    background-color: #edfcff;
     z-index: 1;
 }
 
@@ -72,11 +72,28 @@ a {
 }
 
 .navigation li a.active {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #4ac4d1;
+    border-radius: 30px;
+    padding: 12px 36px;
+    box-shadow: 0 0 10px #e7e7e7;
+}
+
+.navigation li a.active2 {
     color: #4ac4f3;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: white;
+    border-radius: 30px;
+    padding: 12px 36px;
+    box-shadow: 0 0 10px #e7e7e7;
 }
 
 .login-button {
     position: absolute;
+    font-size: 16px;
     right: 0;
     font-weight: bold;
     color: #4ac4f3;
@@ -94,6 +111,7 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
+
 }
 
 .banner {
@@ -433,6 +451,7 @@ ul li:hover ul {
     display: block;
 }
 
+
 @media (max-width: 1350px) {
     .page-header .container {
         width: 100%;
@@ -562,3 +581,91 @@ ul li:hover ul {
 }
 
 
+/* 其他样式保持不变 */
+
+/* 轮播图容器 */
+.slider-container {
+    position: relative;
+    width: 100%;
+    /* 调整 margin-top 为 header 的高度，确保不被遮挡 */
+    margin-top: 90px;
+    height: calc(100vh - 90px);
+    overflow: hidden;
+}
+
+/* 轮播图 */
+.slider {
+    display: flex;
+    width: 300%; /* 假设三张图片 */
+    height: 100%;
+    animation: slide 10s infinite; /* 动画持续 15 秒，无限循环 */
+}
+
+.slide {
+    width: 33.3333%; /* 假设三张图片 */
+    height: 100%;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 让图片覆盖整个容器 */
+}
+
+/* 轮播图导航点 */
+.slider-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+}
+
+.dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    margin: 0 5px;
+    animation: dotAnimation 10s infinite; /* 动画持续 15 秒，无限循环 */
+}
+
+.dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 5s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 10s;
+}
+
+/* 轮播图动画 */
+@keyframes slide {
+    0%, 20% {
+        transform: translateX(0);
+    }
+    25%, 45% {
+        transform: translateX(-33.3333%);
+    }
+    50%, 70% {
+        transform: translateX(-66.6666%);
+    }
+    75%, 100% {
+        transform: translateX(0);
+    }
+}
+
+/* 导航点动画 */
+@keyframes dotAnimation {
+    0%, 20% {
+        background-color: #fff;
+    }
+    25%, 100% {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* 其他样式保持不变 */

@@ -1,11 +1,7 @@
 from flask import Flask, render_template, request
-from database import con_mysql
+from login import con_mysql
 
 app = Flask(__name__)
-
-login_data = {
-    "admin": "123456"
-}
 
 
 @app.route('/')
@@ -16,6 +12,26 @@ def index_login():
 @app.route("/register")
 def index_register():
     return render_template('register.html')
+
+
+@app.route("/index")
+def index_index():
+    return render_template('index.html')
+
+
+@app.route("/Online_Learning")
+def index_online_learning():
+    return render_template('online_learning.html')
+
+
+@app.route("/Listening_Learning")
+def index_listening_learning():
+    return render_template('listening_learning.html')
+
+
+@app.route("/mine")
+def index_mine():
+    return render_template('mine.html')
 
 
 @app.route('/login', methods=["POST"])
@@ -29,7 +45,7 @@ def login():
         cursor_select = result['data']
         if len(cursor_select) > 0:
             if pwd == cursor_select[0]['password']:
-                return "登录成功"
+                return render_template('index.html')
             else:
                 return '密码错误 <a href="/">返回登录</a>'
         else:
@@ -59,6 +75,9 @@ def register():
     else:
         return f"查询出错: {result['message']}"
 
+
+# @app.route('/index', methods=["POST"])
+# # def index_index():
 
 if __name__ == '__main__':
     app.run()
