@@ -19,9 +19,9 @@ def index_index():
     return render_template('index.html')
 
 
-@app.route("/Online_Learning")
+@app.route("/Word_Test")
 def index_online_learning():
-    return render_template('online_learning.html')
+    return render_template('Word_Test.html')
 
 
 @app.route("/Listening_Learning")
