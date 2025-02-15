@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线学习</title>
+    <link href="/static/css/Word_Test.css" rel="stylesheet">
+</head>
+
+<body>
+    <header class="page-header">
+        <div class="container">
+            <h1 class="site-name">词  韵  听  风</h1>
+            <nav class="navigation">
+                <ul>
+                    <li><a class="active2" href="index">首页</a></li>
+                    <li><a class="active" href="Word_Test">单词测试</a></li>
+                    <li><a class="active2" href="Listening_Learning">听力学习</a></li>
+                    <li><a class="active2" href="mine">我的</a></li>
+                    <li><a class="active_button" href="login">登录</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="feature">
+            <div class="container">
+                <div class="word-container">
+
+                    <form action="/word_test" method="post">
+                        <p style="font-size: 60px">{{ correct_word }}</p>
+                        {% for option in options %}
+                        <input type="radio" id="option{{ loop.index }}" name="choice" value="{{ loop.index }}">
+                        <label for="option{{ loop.index }}">{{ option }}</label><br>
+                        {% endfor %}
+                        <input type="hidden" name="correct_explanation" value="{{ correct_explanation }}">
+                        {% for option in options %}
+                        <input type="hidden" name="options" value="{{ option }}">
+                        {% endfor %}
+                        <input type="submit" value="提交">
+                    </form>
+                    {% if message %}
+                    <p class="message {% if '回答正确' in message %}correct{% elif '回答错误' in message %}incorrect{% else %}invalid{% endif %}">{{ message }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+
+</html>

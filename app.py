@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from login import con_mysql
+from word_test import get_random_word_and_options
 
 app = Flask(__name__)
 
@@ -25,8 +26,8 @@ def index_login():
 
 
 @app.route("/Word_Test")
-def index_online_learning():
-    return render_template('Word_Test.html')
+def index_word_test():
+    return render_template('word_test.html')
 
 
 @app.route("/Listening_Learning")
@@ -85,6 +86,30 @@ def register():
 def index():
     if request.method == "POST":
         return render_template('login.html')
+
+
+@app.route('/word_test', methods=['GET', 'POST'])
+def word_test():
+    message = None
+    correct_word, options, correct_explanation = get_random_word_and_options()
+    if request.method == 'POST':
+        user_choice = request.form.get('choice')
+        prev_correct_explanation = request.form.get('correct_explanation')
+        prev_options = request.form.getlist('options')
+        try:
+            choice_index = int(user_choice) - 1
+            if 0 <= choice_index < 4 and prev_options[choice_index] == prev_correct_explanation:
+                message = "回答正确！"
+            else:
+                message = f"回答错误，正确的解释：{prev_correct_explanation}"
+        except ValueError:
+            message = "请输入有效的整数选项序号哦。"
+
+    if correct_word and options:
+        return render_template('word_test.html', correct_word=correct_word, options=options,
+                               correct_explanation=correct_explanation, message=message)
+    return "数据库中数据量不足，无法进行此次测试哦。"
+
 
 if __name__ == '__main__':
     app.run()
