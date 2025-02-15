@@ -78,6 +78,17 @@ a {
     box-shadow: 0 0 10px #e7e7e7;
 }
 
+.navigation li a.active_button {
+    margin-left: 60px;
+    color: lightseagreen;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: white;
+    border-radius: 30px;
+    padding: 12px 36px;
+    box-shadow: 0 0 10px #e7e7e7;
+}
+
 .page-header .container {
     position: relative;
     width: 1350px;
@@ -142,6 +153,7 @@ a {
 .dot:nth-child(3) {
     animation-delay: 10s;
 }
+
 
 @media (max-width: 1350px) {
     .page-header .container {

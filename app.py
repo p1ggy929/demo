@@ -5,7 +5,12 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def index_login():
+def index_main():
+    return render_template('index.html')
+
+
+@app.route("/index")
+def index_index():
     return render_template('index.html')
 
 
@@ -14,9 +19,9 @@ def index_register():
     return render_template('register.html')
 
 
-@app.route("/index")
-def index_index():
-    return render_template('index.html')
+@app.route("/login")
+def index_login():
+    return render_template('login.html')
 
 
 @app.route("/Word_Test")
@@ -47,9 +52,9 @@ def login():
             if pwd == cursor_select[0]['password']:
                 return render_template('index.html')
             else:
-                return '密码错误 <a href="/">返回登录</a>'
+                return '密码错误 <a href="/login">返回登录</a>'
         else:
-            return '用户不存在 <a href="/">返回登录</a>'
+            return '用户不存在 <a href="/login">返回登录</a>'
     else:
         return f"查询出错: {result['message']}"
 
@@ -64,20 +69,22 @@ def register():
     if result['status'] == 'success':
         cursor_select = result['data']
         if len(cursor_select) > 0:
-            return '用户已存在 <a href="/">返回登录</a>'
+            return '用户已存在 <a href="/login">返回登录</a>'
         else:
             code = "INSERT INTO `login_user` (`username`, `password`) VALUES (%s, %s)"
             insert_result = con_mysql(code, (name, pwd))
             if insert_result['status'] == 'success':
-                return '注册成功 <a href="/">返回登录</a>'
+                return '注册成功 <a href="/login">返回登录</a>'
             else:
                 return f"注册出错: {insert_result['message']}"
     else:
         return f"查询出错: {result['message']}"
 
 
-# @app.route('/index', methods=["POST"])
-# # def index_index():
+@app.route('/index', methods=["POST"])
+def index():
+    if request.method == "POST":
+        return render_template('login.html')
 
 if __name__ == '__main__':
     app.run()
