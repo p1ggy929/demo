@@ -14,20 +14,34 @@
             <h1 class="site-name">词  韵  听  风</h1>
             <nav class="navigation">
                 <ul>
-                    <li><a class="active2" href="index">首页</a></li>
-                    <li><a class="active" href="Word_Test">单词测试</a></li>
-                    <li><a class="active2" href="Listening_Learning">听力学习</a></li>
-                    <li><a class="active2" href="mine">我的</a></li>
-                    <li><a class="active_button" href="login">登录</a></li>
+                    <li><a class="active2" href="/index">首页</a></li>
+                    <li><a class="active" href="/word_test">单词选择测试</a></li>
+                    <li><a class="active2" href="/Listening_Learning">听力学习</a></li>
+                    <li><a class="active2" href="/mine">我的</a></li>
+                    <li><a class="active_button" href="/login">登录</a></li>
                 </ul>
             </nav>
         </div>
     </header>
     <main>
+        <div class="library-select-container">
+            <form action="/word_test" method="post">
+                <label for="library_id">选择词库:</label>
+                <select id="library_id" name="library_id">
+                    <option value="">请先选择一个词库并点击应用</option>
+                    {% for library in libraries %}
+                    <option value="{{ library[0] }}" {% if selected_library_id == library[0] %}selected{% endif %}>{{ library[1] }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="应用">
+            </form>
+        </div>
         <section class="feature">
             <div class="container">
                 <div class="word-container">
-
+                    {% if message %}
+                    <p class="message {% if '回答正确' in message %}correct{% elif '回答错误' in message %}incorrect{% else %}invalid{% endif %}">{{ message }}</p>
+                    {% endif %}
                     <form action="/word_test" method="post">
                         <p style="font-size: 60px">{{ correct_word }}</p>
                         {% for option in options %}
@@ -38,17 +52,49 @@
                         {% for option in options %}
                         <input type="hidden" name="options" value="{{ option }}">
                         {% endfor %}
+                        <!-- 将所选词库的信息作为隐藏字段传递 -->
+                        <input type="hidden" name="library_id" value="{{ selected_library_id }}">
                         <input type="submit" value="提交">
                     </form>
-                    {% if message %}
-                    <p class="message {% if '回答正确' in message %}correct{% elif '回答错误' in message %}incorrect{% else %}invalid{% endif %}">{{ message }}</p>
-                    {% endif %}
                 </div>
             </div>
         </section>
-
     </main>
+     <div class="statistics-bar">
+        <p>
+            <span>已用时间:</span>
+            <span id="elapsed-time-display">{{ elapsed_time }}</span>
+        </p>
+        <p>
+            <span>已回答题目数:</span>
+            {{ total_count }}
+        </p>
+        <p>
+            <span>正确率:</span>
+            {{ accuracy|round(2) }}%
+        </p>
+    </div>
 
 </body>
+<script>
+        // 获取后端传递的初始时间字符串
+        const initialTimeStr = '{{ elapsed_time }}';
+        // 将时间字符串拆分为小时、分钟和秒
+        const [hours, minutes, seconds] = initialTimeStr.split(':').map(Number);
+        // 计算初始时间的总秒数
+        const initialTotalSeconds = hours * 3600 + minutes * 60 + seconds;
+        // 记录开始时间的总秒数
+        const startTime = Date.now() - initialTotalSeconds * 1000;
 
+        // 每隔1秒更新时间显示
+        setInterval(() => {
+            const now = Date.now();
+            const elapsed = (now - startTime) / 1000;
+            const elapsedHours = Math.floor(elapsed / 3600).toString().padStart(2, '0');
+            const elapsedMinutes = Math.floor((elapsed % 3600) / 60).toString().padStart(2, '0');
+            const elapsedSeconds = Math.floor(elapsed % 60).toString().padStart(2, '0');
+            const elapsedTime = `${elapsedHours}:${elapsedMinutes}:${elapsedSeconds}`;
+            document.getElementById('elapsed-time-display').textContent = elapsedTime;
+        }, 1000);
+    </script>
 </html>
