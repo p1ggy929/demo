@@ -19,6 +19,7 @@ def get_all_libraries():
         sql = "SELECT id, name FROM word_library"
         cursor.execute(sql)
         libraries = cursor.fetchall()
+        print("获取到的词库信息：", libraries)  # 添加调试信息
         return libraries
     except pymysql.Error as err:
         print(f"数据库查询出错: {err}")
@@ -97,6 +98,58 @@ def get_random_word_and_options(library_id=None):
     except pymysql.Error as err:
         print(f"数据库查询出错: {err}")
         return None, None, None
+    finally:
+        if 'connection' in locals() and connection.open:
+            cursor.close()
+            connection.close()
+
+
+def get_random_word(library_id=None):
+    try:
+        connection = pymysql.connect(host=host, port=port, user=user, password=password, database=database, charset=charset)
+        cursor = connection.cursor()
+
+        if library_id == '':  # 当用户选择"全部词库"时传递空字符串
+            library_id = None
+
+        # 根据词库筛选查询表中的总记录数
+        if library_id:
+            count_sql = "SELECT COUNT(*) FROM unified_word WHERE library_id = %s"
+            cursor.execute(count_sql, (library_id,))
+        else:
+            count_sql = "SELECT COUNT(*) FROM unified_word"
+            cursor.execute(count_sql)
+        total_count = cursor.fetchone()[0]
+
+        if total_count < 1:
+            print("数据库中数据量不足，无法进行此次测试哦。")
+            return None
+
+        # 随机获取一个 word 对应的记录索引
+        random_index = random.randint(0, total_count - 1)
+
+        # 获取随机的中文内容（假设存储在 chinese_meanings 字段）
+        if library_id:
+            word_sql = "SELECT explanation FROM unified_word WHERE library_id = %s LIMIT 1 OFFSET %s"
+            cursor.execute(word_sql, (library_id, random_index))
+        else:
+            word_sql = "SELECT explanation FROM unified_word LIMIT 1 OFFSET %s"
+            cursor.execute(word_sql, (random_index,))
+        chinese_word = cursor.fetchone()[0]
+
+        # 同时获取对应的英文单词（假设存储在 words 字段）
+        if library_id:
+            english_word_sql = "SELECT words FROM unified_word WHERE library_id = %s LIMIT 1 OFFSET %s"
+            cursor.execute(english_word_sql, (library_id, random_index))
+        else:
+            english_word_sql = "SELECT words FROM unified_word LIMIT 1 OFFSET %s"
+            cursor.execute(english_word_sql, (random_index,))
+        english_word = cursor.fetchone()[0]
+
+        return chinese_word, english_word
+    except pymysql.Error as err:
+        print(f"数据库查询出错: {err}")
+        return None, None
     finally:
         if 'connection' in locals() and connection.open:
             cursor.close()
